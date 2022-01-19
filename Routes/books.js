@@ -3,6 +3,24 @@ const router = express.Router();
 const { Books } = require('../Models/books');
 
 
+   /**
+    * @swagger
+    * 
+    * /api/books:
+    *   post:
+    *       description: save books to the database
+    *       requestBody: 
+    *           content:
+    *               application/json:
+    *                   schema:
+    *                       properties:
+    *                           - author : 
+    *                                    type: string
+    *                                    description: author of the book
+    *                            
+    */
+
+
 router.get('/', async(req, res)=>{
     const book = await Books.find().sort('name');
     res.send(book)
@@ -43,6 +61,20 @@ router.put('/:id', async(req, res)=>{
         console.log(ex)
     }
 });
+
+router.delete('/:id', async(req, res)=>{
+    try {
+        const book = await Books.findByIdAndRemove(req.params.id);
+        if (!book) {
+            return res.status(404).send("book with the given id does not exist");
+          } else {
+            res.send("book has been deleted");
+          }
+    } catch (ex) {
+        console.log(ex)
+    }
+});
+
 
 module.exports = router;
 
